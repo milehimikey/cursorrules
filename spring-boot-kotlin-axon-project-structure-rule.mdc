@@ -1,0 +1,42 @@
+---
+description: 
+globs: *.kt,*.kts,application.yml
+alwaysApply: false
+---
+
+# Package Structure
+
+.
+├── build.gradle.kts
+└── src
+    ├── main
+    │   ├── kotlin
+    │   │   ├── wtf.milehimikey.{applicationname}
+    │   │   ├── {ApplicationName}Application.kt
+    │   │   ├── RestEndpoint.kt
+    │   │   ├── {aggregate}
+    │   │   │   ├── Commands.kt
+    │   │   │   ├── Events.kt
+    │   │   │   ├── {Aggregate}.kt
+    │   │   │   └── DefaultProjections.kt
+    │   │   └── {aggregate2}
+    │   │       ├── Commands.kt
+    │   │       ├── Events.kt
+    │   │       ├── {Aggregate}.kt
+    │   │       └── DefaultProjections.kt
+    │   └── resources
+    │       └── application.yml
+    └── test
+        ├── kotlin
+        │   └── wtf.milehimikey.{applicationname}
+        │       ├── {ApplicationName}ApplicationTests.kt
+        │       ├── {aggregate}
+        │       │   └── AggregateCommandTests.kt
+        │       └── {aggregate2}
+        │           └── Aggregate2CommandTests.kt
+        └── resources
+            └── application.yml
+
+
+
+
