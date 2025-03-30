@@ -12,6 +12,10 @@ Useful for Spring Boot applications in Kotlin using Axon Framework and gradle.
 
 From the Cline tool. Sets the agent to have a PLAN mode where you work with the agent to develop the plan of action and an ACT mode where it makes changes.
 
+Original source: https://forum.cursor.com/t/how-to-add-cline-memory-bank-feature-to-your-cursor/67868
+
 ### Cline Memory Bank
 
 Sets up a memory bank for your agent interactions. Similar to SpecStory.
+
+Original source: https://forum.cursor.com/t/how-to-add-cline-memory-bank-feature-to-your-cursor/67868
