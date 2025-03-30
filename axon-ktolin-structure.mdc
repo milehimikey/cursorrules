@@ -1,0 +1,62 @@
+---
+description: 
+globs: *.kt,*.kts,application.yml
+alwaysApply: false
+---
+# Overview
+
+- You are working on an application that is using Event Sourcing and CQRS leveraging the Axon Framework.
+- Use Spring Boot and Axon Framework best practices at all times. 
+- Do not allow anything other than endpoints (rest endpoints or messaging endpoints) to access things across packages. For example never allow one aggregate to reach into another aggregates package directly to use something.
+- If two or more aggregates share some structures or utilities put them in a `common` package under the base application package.
+
+# Package Structure
+
+.
+├── build.gradle.kts
+└── src
+    ├── main
+    │   ├── kotlin
+    │   │   ├── wtf.milehimikey.{applicationname}
+    │   │   ├── {ApplicationName}Application.kt
+    │   │   ├── RestEndpoint.kt
+    │   │   ├── {aggregate}
+    │   │   │   ├── Commands.kt
+    │   │   │   ├── Events.kt
+    │   │   │   ├── {Aggregate}.kt
+    │   │   │   └── DefaultProjections.kt
+    │   │   └── {aggregate2}
+    │   │       ├── Commands.kt
+    │   │       ├── Events.kt
+    │   │       ├── {Aggregate}.kt
+    │   │       └── DefaultProjections.kt
+    │   └── resources
+    │       └── application.yml
+    └── test
+        ├── kotlin
+        │   └── wtf.milehimikey.{applicationname}
+        │       ├── {ApplicationName}ApplicationTests.kt
+        │       ├── {aggregate}
+        │       │   └── AggregateCommandTests.kt
+        │       └── {aggregate2}
+        │           └── Aggregate2CommandTests.kt
+        └── resources
+            └── application.yml
+
+# Structure explanations
+
+- build.gradle.kts is the gradle build file. It should use an embedded gradle also found in the root directory under .gradle.
+- The structure of the project is a typical Spring Boot with gradle structure.
+- Use the Axon Framework maven BOM in dependencyManagement of the build and then import the necessary Axon libraries.
+- The package name `wtf.milehimikey` is an example, if the package isn't already defined ask me what it should be.
+- the {applicationname} means to use the name of the application which should be the name of the containing directory. In package name format use it without spaces, underscores, or dashes. Example: if the application name is product-manager then {applicationname} would be replaced with `productmanager`.
+- The {ApplicationName}Application.kt is the spring application class. Replace {ApplicationName} with the name of the application in camel-case. Example if the application name is product-manager then this class should be named ProductManagerApplication.kt.
+- RestEndpoint.kt is the class that will be the REST API for the application. It should use Springs `@RestController`. Functions in this class should call into the application using Axon's CommandGateway and QueryGateway.
+- The {aggregate} and {aggregate2} are examples of packages that should be named based on the aggregate(s) defined. For example if there are 3 aggregates called Order, Customer, and Product then there should be 3 packages under the base package, one for each aggregate, in all lower case. Example: wtf.milehimikey.productmanager.customer, wtf.milehimikey.productmanager.order, wtf.milehimikey.productmanager.product.
+- The Command.kt class in each aggregate package is where the commands for the specific aggregate are placed. All commands go in the same file. These should all be kotlin model classes. Each non-create command should have an id field that is a UUID and has the Axon annotation @TargetAggregateIdentifier on it. 
+- The {Aggregate}.kt class must be the camel case name of the aggregate. For example the Order aggregate would be in Order.kt. This must be an Axon @Aggregate and have both @CommandHandler and @EventSourcingHandler methods for each command in it. 
+- Events.kt is where all event model classes should go for the aggregate. These are used by the aggregate class as well as the projections.
+- The DefaultProjections.kt for each aggregate is what has the @EventHandler and @QueryHandler methods used for read model projections for the given aggregate.  
+- The src/main/resources and src/test/resources each have an application.yml, this is where all spring properties should be set. The test application.yml is test scoped only.
+- The test file {ApplicationName}ApplicationTests.kt should be named the same way as the Spring application name. This will be a @SpringBootTest that tests all input and output endpoints (rest or message based). 
+- The tests that are within the test aggregate folders will be Axon command model tests that use the Axon test framework to exercise the command model inputs and outputs for the aggregate.
