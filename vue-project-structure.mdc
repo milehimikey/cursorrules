@@ -1,0 +1,218 @@
+---
+description: Standards for organizing Vue.js project files and directories
+globs: ./src/**/*.{vue,ts}
+alwaysApply: false
+---
+
+# Directory Structure
+
+In the examples used in this rule, the usage of `aggregate1` and `aggregate2` are examples. These should be replaced with the actual aggregates being worked with. For example if I am building an eCommerce application I would have aggregates like `Order`, `Payment`, and `Product`.
+
+src/
+├── assets/
+│   ├── styles/
+│   ├── images/
+│
+├── components/
+│   ├── common/
+│   ├── aggregate1/
+│   ├── aggregate2/
+│
+├── views/
+│   ├── Home.vue
+│   ├── aggregate1/
+│   │   ├── List.vue
+│   │   └── Details.vue
+│   └── settings/
+│       └── Profile.vue
+│
+├── lang/
+│   └── en_US/
+│       ├── index.js
+│       ├── common.json
+│       ├── components.json
+│       └── errors.json
+│
+├── plugins/
+│   ├── i18n.ts
+│   ├── router.ts
+│   └── pinia.ts
+│
+├── services/
+│   ├── api.ts
+│   ├── Aggregate1Service.ts
+│   └── Aggregate2Service.ts
+│
+├── util/
+│   ├── constants.ts
+│   ├── dateFormatter.ts
+│   └── validators.ts
+│
+├── store/
+│   ├── index.ts
+│   └── modules/
+│       ├── aggregagte1.ts
+│       └── aggregate2.ts
+│
+└── bootstrap.ts
+
+## Directory Purposes
+
+### assets
+
+- Global static assets used across the application
+- Styles should follow a consistent naming convention
+- Images should be optimized for web use
+- Consider using SVGs for icons when possible
+
+### components
+
+- Group components by feature/resource
+- Keep components focused and reusable
+- Follow naming conventions:
+
+  components/
+  ├── common/
+  │   ├── BaseButton.vue
+  │   └── BaseInput.vue
+  ├── aggregate1/
+  │   ├── Aggregate1Card.vue
+  │   └── Aggregate1List.vue
+  └── aggregate2/
+      └── Aggregate2Details.vue
+
+### views
+
+- Map directly to routes in the router
+- Handle page-level state and data fetching
+- Compose using components from `components/`
+- Follow route hierarchy in directory structure:
+- Route names are REQUIRED and should match the path structure:
+
+  ```typescript
+  // router.ts
+  const routes = [
+    {
+      path: '/aggregate1',
+      name: 'aggregate1-list',  // Required: kebab-case name
+      component: () => import('@/views/aggregate1/List.vue')
+    },
+    {
+      path: '/aggregate1/:id',
+      name: 'aggregate1-details',  // Required: kebab-case name
+      component: () => import('@/views/aggregate1/Details.vue')
+    }
+  ];
+
+  // Usage in components/views:
+  router.push({ name: 'aggregate1-details', params: { id: '123' } });
+  ```
+
+### lang
+
+- Organize translations by feature/component
+- Use nested structure for better organization
+- Follow i18n-translations rule for details
+
+### plugins
+
+- Configure and export Vue plugins
+- Handle plugin-specific setup and options
+- Example plugin setup:
+
+  ```typescript
+  // plugins/i18n.ts
+  import { createI18n } from 'vue-i18n';
+  import en_US from '@/lang/en_US';
+
+  export default createI18n({
+    locale: 'en_US',
+    messages: {
+      en_US
+    }
+  });
+  ```
+
+### services
+
+- Follow service-organization rule
+- One service file per resource
+- Handle all API interactions
+
+### util
+
+- Shared helper functions and constants
+- Keep functions pure and well-documented
+- Example utility:
+
+  ```typescript
+  // util/dateFormatter.ts
+  export const formatDate = (date: Date): string => {
+    // Format implementation
+  };
+  ```
+
+### store
+
+- State management using Pinia
+- Organize stores by feature
+- Example store structure:
+
+  ```typescript
+  // store/modules/aggregate1.ts
+  export const useCampaignStore = defineStore('aggregate1', {
+    state: () => ({
+      aggregate1: [],
+      loading: false
+    }),
+    actions: {
+      async fetchAggregate1() {
+        // Implementation
+      }
+    }
+  });
+  ```
+
+### bootstrap.ts
+
+- Application entry point
+- Install plugins
+- Configure global properties
+- Example:
+
+  ```typescript
+  // bootstrap.ts
+  import { createApp } from 'vue';
+  import App from './App.vue';
+  import router from './plugins/router';
+  import i18n from './plugins/i18n';
+  import { createPinia } from 'pinia';
+
+  const app = createApp(App);
+  const pinia = createPinia();
+
+  app.use(router)
+     .use(i18n)
+     .use(pinia)
+     .mount('#app');
+  ```
+
+## Best Practices
+
+1. Keep directory structure flat where possible
+2. Group related files together
+3. Use index files for cleaner imports
+4. Follow consistent naming conventions
+5. Lazy load routes for better performance
+6. Keep components focused and reusable
+7. Use TypeScript for better type safety
+
+## Important Notes
+
+1. Always consider code splitting opportunities
+2. Keep component files focused and manageable
+3. Use proper TypeScript types across the project
+4. Follow established naming conventions
+5. Document complex logic and configurations
+6. Consider bundle size when adding dependencies
+7. Use lazy loading for routes and heavy components
