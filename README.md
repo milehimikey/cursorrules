@@ -8,6 +8,10 @@ Collection of cursor rules I have created or found useful from others for variou
 
 Useful for Spring Boot applications in Kotlin using Axon Framework and gradle.
 
+### Vue Project Structure
+
+Tuned from a colleague's rule for my liking in personal projects. Useful for Vue.js projects.
+
 ### Plan and Act Modes
 
 From the Cline tool. Sets the agent to have a PLAN mode where you work with the agent to develop the plan of action and an ACT mode where it makes changes.
